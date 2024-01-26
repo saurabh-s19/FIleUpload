@@ -1,20 +1,24 @@
-
 const express = require('express');
+const dotenv = require('dotenv')
+dotenv.config({path:__dirname+'/.env'});
 const multer = require('multer');
 const mongoose = require('mongoose');
+const BASE_URL =process.env.BASE_URL;
+const DATABASE_URL=process.env.DATABASE_URL
+
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 app.use(express.urlencoded({extended:false}));
 
-mongoose.connect('mongodb://127.0.0.1:27017/fileUploadDB');
+
+mongoose.connect(DATABASE_URL);
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 db.once('open', () => {
     console.log('Connected to MongoDB');
 });
 
-// Define schema and model for file paths
 const fileSchema = new mongoose.Schema({
     path: String
 });
@@ -47,5 +51,5 @@ app.post('/upload', upload.single('file'), async (req, res) => {
 });
 
 app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+    console.log(`Server is running on ${PORT}`);
 });
